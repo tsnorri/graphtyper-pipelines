@@ -28,6 +28,9 @@ SAMTOOLS=$(type -P samtools)
 ## GNU parallel binary, e.g. /usr/bin/parallel
 PARALLEL=$(type -P parallel)
 
+## bcftools binary
+BCFTOOLS=$(type -P bcftools)
+
 
 # Directories #
 ## Format of the temporary directory. Change this if you cannot use /tmp/

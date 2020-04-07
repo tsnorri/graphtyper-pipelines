@@ -6,6 +6,7 @@ set -o pipefail
 CONFIG=$1
 bam=$2 # E.g. /nfs/data/.../PN.bam
 region=$3 # E.g. chr21:10000
+jobId=$4
 
 # Parse region
 chrom=`echo $region | cut -d":" -f1`
@@ -145,22 +146,22 @@ genotyping_time=$(date +%s)
 
 # Concatenate all VCF files
 $GRAPHTYPER vcf_concatenate $TMP/results/${chrom}/*.vcf.gz --no_sort --output=$TMP/final_small_variants.vcf.gz
-$TABIX $TMP/final_small_variants.vcf.gz
+$TABIX -f $TMP/final_small_variants.vcf.gz
 $GRAPHTYPER vcf_concatenate $TMP/haps/${chrom}/*.vcf.gz --no_sort --output=$TMP/final_haps.vcf.gz
-$TABIX $TMP/final_haps.vcf.gz
+$TABIX -f $TMP/final_haps.vcf.gz
 $GRAPHTYPER vcf_concatenate $TMP/hap_calls/${chrom}/*.vcf.gz --no_sort --output=$TMP/final_hap_calls.vcf.gz
-$TABIX $TMP/final_hap_calls.vcf.gz
+$TABIX -f $TMP/final_hap_calls.vcf.gz
 
 # Make sure the output directories exist
-mkdir --parents results/${chrom}/ haps/${chrom} hap_calls/${chrom}
+mkdir --parents results/${jobId}/${chrom}/ haps/${jobId}/${chrom} hap_calls/${jobId}/${chrom}
 
 # Move results to output directories
-mv $TMP/final_small_variants.vcf.gz results/${chrom}/${region_id}.vcf.gz
-mv $TMP/final_small_variants.vcf.gz.tbi results/${chrom}/${region_id}.vcf.gz.tbi
-mv $TMP/final_haps.vcf.gz haps/${chrom}/${region_id}.vcf.gz
-mv $TMP/final_haps.vcf.gz.tbi haps/${chrom}/${region_id}.vcf.gz.tbi
-mv $TMP/final_hap_calls.vcf.gz hap_calls/${chrom}/${region_id}.vcf.gz
-mv $TMP/final_hap_calls.vcf.gz.tbi hap_calls/${chrom}/${region_id}.vcf.gz.tbi
+mv $TMP/final_small_variants.vcf.gz     results/${jobId}/${chrom}/${region_id}.vcf.gz
+mv $TMP/final_small_variants.vcf.gz.tbi results/${jobId}/${chrom}/${region_id}.vcf.gz.tbi
+mv $TMP/final_haps.vcf.gz               haps/${jobId}/${chrom}/${region_id}.vcf.gz
+mv $TMP/final_haps.vcf.gz.tbi           haps/${jobId}/${chrom}/${region_id}.vcf.gz.tbi
+mv $TMP/final_hap_calls.vcf.gz          hap_calls/${jobId}/${chrom}/${region_id}.vcf.gz
+mv $TMP/final_hap_calls.vcf.gz.tbi      hap_calls/${jobId}/${chrom}/${region_id}.vcf.gz.tbi
 
 # Clean up
 if [[ $CLEAN_UP -eq 1 ]]; then

@@ -114,7 +114,6 @@ GRAPH="$TMP/input_with_svs"
 echo `date`" INFO: Constructing graph ${GRAPH}"
 $GRAPHTYPER construct $GRAPH $GENOME $PADDED_REGION --vcf=$TMP/input_with_svs.vcf.gz --sv_graph
 echo `date`" INFO: Indexing graph ${GRAPH}"
-$GRAPHTYPER index $GRAPH
 echo `date`" INFO: Calling graph ${GRAPH}"
 
 # Copy BAM files to a local directory

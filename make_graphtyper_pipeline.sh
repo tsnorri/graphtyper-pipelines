@@ -5,10 +5,11 @@ set -o pipefail
 
 bam=$1
 CONFIG=$2
+jobId=$3
 
 if [[ -z "$bam" ]]
 then
-  echo "Usage: run.sh <BAM/bamlist> [CONFIG]"
+  echo "Usage: run.sh <BAM/bamlist> [CONFIG] [JOBID]"
   exit 1
 fi
 
@@ -19,18 +20,23 @@ then
   CONFIG=config.sh
 fi
 
+if [[ -z "$jobId" ]]
+then
+  jobId="default"
+fi
+
 source $CONFIG
 
 
 if [[ ! -z $REGION_START ]]
 then
   # Call only a single region
-  echo "set -e; set -o pipefail; ./node_script.sh $CONFIG $bam $REGION_START"
+  echo "./node_script.sh $CONFIG $bam $REGION_START $jobId"
 elif [[ ! -z $REGION_FILE ]] && [[ -f $REGION_FILE ]]
 then
   for region in `cat $REGION_FILE`
   do
-    echo "set -e; set -o pipefail; ./node_script.sh $CONFIG $bam $region"
+    echo "./node_script.sh $CONFIG $bam $region $jobId"
   done
 else
   for chrom in $CHROMOSOMES
@@ -46,7 +52,7 @@ else
 
       # Only add this region if the output file is missing
       if [[ ! -f "results/${chrom}/${region_id}.vcf.gz" ]]; then
-        echo "set -e; set -o pipefail; ./node_script.sh $CONFIG $bam ${chrom}:${start}"
+        echo "./node_script.sh $CONFIG $bam ${chrom}:${start} $jobId"
       fi
 
       start=$((end + 1))

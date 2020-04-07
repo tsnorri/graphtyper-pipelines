@@ -11,7 +11,7 @@ The pipeline scripts will automatically search for these tools in your PATH dire
 ### Short version
 Small variants genotyping
 ```sh
-bash make_graphtyper_pipeline.sh <BAM> [CONFIG] | bash
+bash make_graphtyper_pipeline.sh <BAM> [CONFIG] [JOBID] | bash
 ```
 where BAM can either be a single BAM file or a file with a list of BAM files. CONFIG is the configuration file to use (default: `./config.sh`). The SV genotyping is run similarly:
 ```sh
@@ -22,7 +22,7 @@ bash make_graphtyper_sv_pipeline.sh <BAM> [CONFIG]
 #### Running on a computer cluster
 The command in the "short version" is a typical use case for someone who wants to run the Graphtyper pipelines on a personal computer. If you have a computer cluster, you are likely to be using some workload manager. Integrating the pipeline script with your workload manager should be easy, as each line can be run independently and thus can be run in parallel. For example, if your workload manager of choice is Slurm you could use:
 ```sh
-bash make_graphtyper_[sv_]pipeline.sh <BAM> [CONFIG] | \
+bash make_graphtyper_[sv_]pipeline.sh <BAM> [CONFIG] [JOBID] | \
   while IFS='' read -r line
   do
     srun -c 4 $line &
